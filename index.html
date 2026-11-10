@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BD88 — Sports Prediction Demo</title>
+<style>
+:root{--bg:#090d16;--panel:#121a29;--panel2:#192438;--red:#ef3340;--gold:#ffc857;--muted:#9aa8bd;--line:#29364b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f5f7fb;font:15px system-ui,"Noto Sans Bengali",sans-serif}
+header{padding:18px 5%;background:#101827;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.logo{font-size:25px;font-weight:900;letter-spacing:1px;color:var(--gold)}.logo span{color:var(--red)}
+nav{display:flex;gap:8px;flex-wrap:wrap}button{border:0;border-radius:9px;padding:10px 14px;background:var(--red);color:white;font-weight:700;cursor:pointer}button.secondary{background:var(--panel2);border:1px solid var(--line)}button.gold{background:var(--gold);color:#171717}
+main{max-width:1100px;margin:24px auto;padding:0 16px}.notice{background:#302616;border:1px solid #765b27;color:#ffe2a0;padding:12px 14px;border-radius:12px;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:17px}.muted{color:var(--muted)}.match{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:12px 0}.teams{font-weight:750}.odds{display:flex;gap:7px}.odds button{background:#26364d;color:#fff}.odds button.selected{outline:2px solid var(--gold);background:#604b20}
+input,select{width:100%;padding:11px;border-radius:8px;border:1px solid var(--line);background:#0b1220;color:white;margin:6px 0 12px}
+.stat{font-size:27px;font-weight:850;color:var(--gold)}.hidden{display:none}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.pill{padding:6px 10px;background:#25334a;border-radius:20px;color:#dce6f5;font-size:12px}
+table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:10px;border-bottom:1px solid var(--line)}footer{text-align:center;padding:30px;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<header><div class="logo">BD<span>88</span></div><nav><button class="secondary" onclick="show('home')">হোম</button><button class="secondary" onclick="show('account')">আমার অ্যাকাউন্ট</button><button class="secondary" onclick="show('admin')">অ্যাডমিন</button></nav></header>
+<main>
+<div class="notice"><b>ডেমো সংস্করণ:</b> এখানে শুধু বিনামূল্যের ভার্চুয়াল পয়েন্ট দিয়ে স্পোর্টস প্রেডিকশন করা যায়। বাস্তব টাকা, ডিপোজিট বা উত্তোলন নেই।</div>
+<section id="home">
+<div class="grid">
+<div class="card"><div class="muted">আপনার ভার্চুয়াল ব্যালেন্স</div><div class="stat" id="balance">1,000 পয়েন্ট</div><span class="pill">শুরুতে বিনামূল্যে</span></div>
+<div class="card"><h3>আজকের প্রেডিকশন</h3><p class="muted">একটি ম্যাচ বেছে নিয়ে ফলাফল অনুমান করুন।</p><p>সঠিক অনুমানে ডেমো পয়েন্ট যোগ হবে।</p></div>
+</div>
+<h2>ম্যাচ তালিকা</h2><div class="grid" id="matches"></div>
+<div class="card" style="margin-top:16px"><h3>আপনার প্রেডিকশন</h3><div id="predictions" class="muted">এখনও কোনো প্রেডিকশন নেই।</div></div>
+</section>
+<section id="account" class="hidden">
+<div class="card"><h2>আমার অ্যাকাউন্ট</h2><label>নাম</label><input id="username" placeholder="আপনার নাম"><label>ইমেইল বা ইউজার আইডি</label><input id="userId" placeholder="demo@example.com"><button onclick="saveProfile()">প্রোফাইল সংরক্ষণ</button><p id="profileMsg" class="muted"></p><hr style="border-color:var(--line)"><p>বর্তমান ব্যালেন্স: <b id="balance2">1,000 পয়েন্ট</b></p></div>
+</section>
+<section id="admin" class="hidden">
+<div class="card"><h2>মাস্টার অ্যাডমিন প্যানেল</h2><p class="muted">এটি একটি ব্রাউজার-ভিত্তিক নমুনা। কোনো নিরাপদ সার্ভার লগইন বা অনলাইন ডেটাবেস যুক্ত নেই।</p><label>ডেমো অ্যাডমিন পাসকোড</label><input id="adminPass" type="password" placeholder="পাসকোড লিখুন"><button onclick="adminLogin()">প্রবেশ করুন</button><p class="muted">ডেমো পাসকোড: <b>BD88demo</b></p><div id="adminArea" class="hidden"><div class="grid"><div class="card"><div class="muted">মোট ডেমো প্রেডিকশন</div><div class="stat" id="totalPred">0</div></div><div class="card"><div class="muted">মোট ভার্চুয়াল পয়েন্ট</div><div class="stat" id="adminBalance">1,000</div></div></div><h3>প্রেডিকশন লগ</h3><div id="adminLogs" class="muted">কোনো লগ নেই।</div><h3>ঘোষণা পরিবর্তন</h3><input id="announcement" placeholder="ঘোষণার লেখা"><button onclick="setAnnouncement()">ঘোষণা আপডেট</button><p class="muted" id="announcementMsg"></p></div></div>
+</section>
+</main>
+<footer>BD88 demo • শুধুমাত্র বিনামূল্যের ভার্চুয়াল পয়েন্ট ও অনুশীলনের জন্য</footer>
+<script>
+const games=[{id:1,a:"ঢাকা",b:"চট্টগ্রাম",time:"ডেমো ম্যাচ ১"},{id:2,a:"আর্জেন্টিনা",b:"ব্রাজিল",time:"ডেমো ম্যাচ ২"},{id:3,a:"রিয়াল মাদ্রিদ",b:"বার্সেলোনা",time:"ডেমো ম্যাচ ৩"}];
+let balance=1000, picks=[], profile={};
+function render(){document.getElementById('balance').textContent=balance.toLocaleString()+' পয়েন্ট';document.getElementById('balance2').textContent=balance.toLocaleString()+' পয়েন্ট';
+document.getElementById('matches').innerHTML=games.map(g=>`<div class="card"><span class="pill">${g.time}</span><div class="match"><span class="teams">${g.a}</span><span class="muted">বনাম</span><span class="teams">${g.b}</span></div><div class="odds"><button onclick="pick(${g.id},'${g.a}')">${g.a}</button><button onclick="pick(${g.id},'ড্র')">ড্র</button><button onclick="pick(${g.id},'${g.b}')">${g.b}</button></div></div>`).join('');
+document.getElementById('predictions').innerHTML=picks.length?picks.map(p=>`<p>${p.game}: <b>${p.choice}</b> — ${p.points} পয়েন্ট</p>`).join(''):'এখনও কোনো প্রেডিকশন নেই।';
+document.getElementById('totalPred').textContent=picks.length;document.getElementById('adminBalance').textContent=balance.toLocaleString();document.getElementById('adminLogs').innerHTML=picks.length?picks.map(p=>`<p>${p.game} → ${p.choice} (${p.points} পয়েন্ট)</p>`).join(''):'কোনো লগ নেই।'}
+function pick(id,choice){if(picks.some(p=>p.id===id)){alert('এই ম্যাচে ইতিমধ্যে প্রেডিকশন দিয়েছেন।');return}let g=games.find(x=>x.id===id);picks.push({id,game:g.a+' বনাম '+g.b,choice,points:50});balance-=50;render();alert('৫০ ভার্চুয়াল পয়েন্টের ডেমো প্রেডিকশন সংরক্ষিত হয়েছে।')}
+function show(id){['home','account','admin'].forEach(x=>document.getElementById(x).classList.toggle('hidden',x!==id))}
+function saveProfile(){profile={name:document.getElementById('username').value,userId:document.getElementById('userId').value};document.getElementById('profileMsg').textContent='এই ডেমো সেশনে প্রোফাইল সংরক্ষিত হয়েছে।'}
+function adminLogin(){if(document.getElementById('adminPass').value==='BD88demo'){document.getElementById('adminArea').classList.remove('hidden');render()}else alert('পাসকোড সঠিক নয়।')}
+function setAnnouncement(){document.getElementById('announcementMsg').textContent='ডেমো ঘোষণা: '+document.getElementById('announcement').value}
+render();
+</script>
+</body></html>
